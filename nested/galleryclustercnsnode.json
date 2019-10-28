@@ -166,15 +166,7 @@
 				"diskSizeGB": "[parameters('osDiskSize')]",
 				"osType": "Linux"
 			},
-			"dataDisks": [{
-				"name": "[concat(parameters('hostName'), '-docker-pool')]",
-				"diskSizeGB": "[parameters('dataDiskSize')]",
-				"lun": 0,
-				"managedDisk": {
-					"storageAccountType": "[parameters('vmStorageType')]"
-				},
-				"createOption": "Empty"
-			},  {
+			"dataDisks": [  {
 				"name": "[concat(parameters('hostName'), '-gluster-disk0')]",
 				"diskSizeGB": "[parameters('glusterDiskSize')]",
 				"lun": 1,
@@ -212,14 +204,6 @@
 				"diskSizeGB": 64
 			},
 			"dataDisks": [{
-				"name": "[concat(parameters('hostname'), '-docker-pool')]",
-				"diskSizeGB": "[parameters('dataDiskSize')]",
-				"lun": 0,
-				"vhd": {
-					"uri": "[concat(parameters('unmanagedDataDiskUri'), 'vhds/', parameters('hostname'), '-docker-pool.vhd')]"
-				},
-				"createOption": "Empty"
-			},  {
 				"name": "[concat(parameters('hostname'), '-gluster-disk0')]",
 				"diskSizeGB": "[parameters('glusterDiskSize')]",
 				"lun": 1,

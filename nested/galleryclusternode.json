@@ -159,16 +159,7 @@
 				"createOption": "FromImage",
 				"diskSizeGB": "[parameters('osDiskSize')]",
 				"osType": "Linux"
-			},
-			"dataDisks": [{
-				"name": "[concat(parameters('hostName'), '-docker-pool')]",
-				"diskSizeGB": "[parameters('dataDiskSize')]",
-				"lun": 0,
-				"managedDisk": {
-					"storageAccountType": "[parameters('vmStorageType')]"
-				},
-				"createOption": "Empty"
-			}]
+			}
 		},
 		"unmanagedStorageProfile": {
 			"imageReference": "[if(equals(parameters('osImageType'), 'marketplace'), parameters('marketplaceOsImage'), parameters('imageReference'))]",
@@ -180,16 +171,7 @@
 				"caching": "ReadWrite",
 				"createOption": "FromImage",
 				"diskSizeGB": 64
-			},
-			"dataDisks": [{
-				"name": "[concat(parameters('hostname'), '-docker-pool')]",
-				"diskSizeGB": "[parameters('dataDiskSize')]",
-				"lun": 0,
-				"vhd": {
-					"uri": "[concat(parameters('unmanagedDataDiskUri'), 'vhds/', parameters('hostname'), '-docker-pool.vhd')]"
-				},
-				"createOption": "Empty"
-			}]
+			}
 		},
 		"storageProfile": "[concat(parameters('storageKind'), 'StorageProfile')]"
 	},
