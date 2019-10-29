@@ -158,7 +158,7 @@ do
 ${MASTER}0$c openshift_node_group_name='node-config-master'"
 done
 
-# Create Infra nodes grouping 
+# Create Infra nodes grouping
 echo $(date) " - Creating Infra nodes grouping"
 for (( c=1; c<=$INFRACOUNT; c++ ))
 do
@@ -278,7 +278,7 @@ os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
 openshift_master_api_port=443
 openshift_master_console_port=443
 osm_default_node_selector='node-role.kubernetes.io/compute=true'
-openshift_disable_check=memory_availability,docker_image_availability
+openshift_disable_check=disk_availability,memory_availability,docker_image_availability
 $CLOUDKIND
 $SCKIND
 $CUSTOMCSS
