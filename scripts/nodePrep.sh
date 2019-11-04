@@ -133,5 +133,41 @@ fi
 systemctl enable docker
 systemctl start docker
 
-echo $(date) " - Script Complete"
+# Resizing for LVM disks for LVM RHEL OS
 
+DEVICE="/dev/sda"
+PARTNR="2"
+APPLY="apply"
+
+fdisk -l $DEVICE$PARTNR >> /dev/null 2>&1 || (echo "could not find device $DEVICE$PARTNR - please check the name" && exit 1)
+
+CURRENTSIZEB=`fdisk -l $DEVICE$PARTNR | grep "Disk $DEVICE$PARTNR" | cut -d' ' -f5`
+CURRENTSIZE=`expr $CURRENTSIZEB / 1024 / 1024`
+
+# So get the disk-informations of our device in question
+# .. to ensure the units are displayed as MB, since otherwise it will vary by disk size ( MB, G, T )
+
+MAXSIZEMB=`printf %s\\n 'unit MB print list' | parted | grep "Disk ${DEVICE}" | cut -d' ' -f3 | tr -d MB`
+
+echo "[ok] would/will resize to from ${CURRENTSIZE}MB to ${MAXSIZEMB}MB "
+
+if [[ "$APPLY" == "apply" ]] ; then
+  echo "[ok] applying resize operation.."
+  parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZEMB}
+  echo "[done]"
+else
+  echo "[WARNING]!: Sandbox mode, i did not size!. Use 'apply' as the 3d parameter to apply the changes"
+fi
+
+lvextend -l +100%FREE /dev/rootvg/varlv
+xfs_growfs /dev/rootvg/varlv
+
+echo "[extended lv]"
+
+#END OF DISK re-size
+
+# ICP41 Prerequistes - SYSTEM V IPC params
+sudo sysctl -w vm.max_map_count=1048576
+echo "vm.max_map_count=1048576" | sudo tee -a /etc/sysctl.conf
+
+echo $(date) " - Script Complete"
