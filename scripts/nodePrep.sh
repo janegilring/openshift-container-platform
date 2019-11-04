@@ -170,4 +170,6 @@ echo "[extended lv]"
 sudo sysctl -w vm.max_map_count=1048576
 echo "vm.max_map_count=1048576" | sudo tee -a /etc/sysctl.conf
 
+echo "-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 44134 -j ACCEPT" | sudo tee -a /etc/sysconfig/iptables
+
 echo $(date) " - Script Complete"
