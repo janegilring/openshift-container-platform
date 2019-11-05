@@ -133,6 +133,7 @@ fi
 systemctl enable docker
 systemctl start docker
 
+: '
 # Resizing for LVM disks for LVM RHEL OS
 
 DEVICE="/dev/sda"
@@ -153,7 +154,7 @@ echo "[ok] would/will resize to from ${CURRENTSIZE}MB to ${MAXSIZEMB}MB "
 
 if [[ "$APPLY" == "apply" ]] ; then
   echo "[ok] applying resize operation.."
-  parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZEMB}
+ parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZEMB}
   echo "[done]"
 else
   echo "[WARNING]!: Sandbox mode, i did not size!. Use 'apply' as the 3d parameter to apply the changes"
@@ -164,12 +165,12 @@ xfs_growfs /dev/rootvg/varlv
 
 echo "[extended lv]"
 
-#END OF DISK re-size
+END OF DISK re-size
 
-# ICP41 Prerequistes - SYSTEM V IPC params
+ ICP41 Prerequistes - SYSTEM V IPC params
 sudo sysctl -w vm.max_map_count=1048576
 echo "vm.max_map_count=1048576" | sudo tee -a /etc/sysctl.conf
 
 echo "-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 44134 -j ACCEPT" | sudo tee -a /etc/sysconfig/iptables
-
+'
 echo $(date) " - Script Complete"

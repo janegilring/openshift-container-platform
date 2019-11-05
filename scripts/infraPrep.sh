@@ -125,6 +125,7 @@ fi
 systemctl enable docker
 systemctl start docker
 
+: '
 # Resizing for LVM disks for LVM RHEL OS
 
 DEVICE="/dev/sda"
@@ -161,6 +162,7 @@ echo "[extended lv]"
 # ICP41 Prerequistes - SYSTEM V IPC params
 sudo sysctl -w vm.max_map_count=1048576
 echo "vm.max_map_count=1048576" | sudo tee -a /etc/sysctl.conf
+'
 
 echo $(date) " - Script Complete"
 
