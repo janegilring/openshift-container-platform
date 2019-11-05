@@ -139,7 +139,11 @@ DEVICE="/dev/sda"
 PARTNR="2"
 APPLY="apply"
 
+echo "Before fdisk"
+
 fdisk -l $DEVICE$PARTNR >> /dev/null 2>&1 || (echo "could not find device $DEVICE$PARTNR - please check the name" && exit 1)
+
+echo "After fdisk"
 
 CURRENTSIZEB=`fdisk -l $DEVICE$PARTNR | grep "Disk $DEVICE$PARTNR" | cut -d' ' -f5`
 CURRENTSIZE=`expr $CURRENTSIZEB / 1024 / 1024`
@@ -151,13 +155,9 @@ MAXSIZEMB=`printf %s\\n 'unit MB print list' | parted | grep "Disk ${DEVICE}" | 
 
 echo "[ok] would/will resize to from ${CURRENTSIZE}MB to ${MAXSIZEMB}MB "
 
-if [[ "$APPLY" == "apply" ]] ; then
-  echo "[ok] applying resize operation.."
-  parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZEMB}
-  echo "[done]"
-else
-  echo "[WARNING]!: Sandbox mode, i did not size!. Use 'apply' as the 3d parameter to apply the changes"
-fi
+echo "[ok] applying resize operation.."
+parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZEMB}
+echo "[done]"
 
 lvextend -l +100%FREE /dev/rootvg/varlv
 xfs_growfs /dev/rootvg/varlv
