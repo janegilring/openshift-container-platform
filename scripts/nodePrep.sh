@@ -137,26 +137,15 @@ systemctl start docker
 
 DEVICE="/dev/sda"
 PARTNR="2"
-APPLY="apply"
-
-echo "Before fdisk"
 
 fdisk -l $DEVICE$PARTNR >> /dev/null 2>&1 || (echo "could not find device $DEVICE$PARTNR - please check the name" && exit 1)
 
-echo "After fdisk"
+# Get the disk-information (depending on KB/MB/GB) of our device
 
-CURRENTSIZEB=`fdisk -l $DEVICE$PARTNR | grep "Disk $DEVICE$PARTNR" | cut -d' ' -f5`
-CURRENTSIZE=`expr $CURRENTSIZEB / 1024 / 1024`
+MAXSIZE=`parted -m ${DEVICE} print all | grep ${DEVICE} | cut -d ':' -f2`
 
-# So get the disk-informations of our device in question
-# .. to ensure the units are displayed as MB, since otherwise it will vary by disk size ( MB, G, T )
-
-MAXSIZEMB=`printf %s\\n 'unit MB print list' | parted | grep "Disk ${DEVICE}" | cut -d' ' -f3 | tr -d MB`
-
-echo "[ok] would/will resize to from ${CURRENTSIZE}MB to ${MAXSIZEMB}MB "
-
-echo "[ok] applying resize operation.."
-parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZEMB}
+echo "[ok] will resize to ${MAXSIZE} "
+parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZE}
 echo "[done]"
 
 lvextend -l +100%FREE /dev/rootvg/varlv
@@ -166,7 +155,7 @@ echo "[extended lv]"
 
 #END OF DISK re-size
 
-# ICP41 Prerequistes - SYSTEM V IPC params
+#ICP41 Prerequistes - SYSTEM V IPC params
 sudo sysctl -w vm.max_map_count=1048576
 echo "vm.max_map_count=1048576" | sudo tee -a /etc/sysctl.conf
 
