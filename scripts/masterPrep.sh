@@ -146,6 +146,7 @@ MAXSIZE=`parted -m ${DEVICE} print all | grep ${DEVICE} | cut -d ':' -f2`
 
 echo "[ok] will resize to ${MAXSIZE} "
 parted ${DEVICE} resizepart ${PARTNR} ${MAXSIZE}
+pvresize ${DEVICE}${PARTNR}
 echo "[done]"
 
 lvextend -l +100%FREE /dev/rootvg/varlv
@@ -158,7 +159,5 @@ echo "[extended lv]"
 #ICP41 Prerequistes - SYSTEM V IPC params
 sudo sysctl -w vm.max_map_count=1048576
 echo "vm.max_map_count=1048576" | sudo tee -a /etc/sysctl.conf
-
-echo "-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 44134 -j ACCEPT" | sudo tee -a /etc/sysconfig/iptables
 
 echo $(date) " - Script Complete"
